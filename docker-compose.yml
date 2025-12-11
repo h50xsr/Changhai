@@ -1,0 +1,60 @@
+services:
+  ltitool:
+    build: ./dockerfilemap
+    container_name: ltitool
+    environment:
+      SESSION_SECRET: "sessionsecret"
+      OAUTH_SECRET: "oauthtestsecret"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ltitool.rule=Host(`lti.ltitaak.be`)
+      - traefik.http.routers.ltitool.entrypoints=web
+    networks:
+      - traefik
+
+  mariadb:
+    image: bitnami/mariadb
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_moodle
+      - MARIADB_DATABASE=bitnami_moodle
+      - MARIADB_CHARACTER_SET=utf8mb4
+      - MARIADB_COLLATE=utf8mb4_unicode_ci
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb'
+    networks:
+      - traefik
+
+  moodle:
+    image: bitnamilegacy/moodle:4.4
+    environment:
+      - MOODLE_DATABASE_HOST=mariadb
+      - MOODLE_DATABASE_PORT_NUMBER=3306
+      - MOODLE_DATABASE_USER=bn_moodle
+      - MOODLE_DATABASE_NAME=bitnami_moodle
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'moodle_data:/bitnami/moodle'
+      - 'moodledata_data:/bitnami/moodledata'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.moodle.rule=Host(`moodle.ltitaak.be`)
+      - traefik.http.routers.moodle.entrypoints=web
+      - traefik.http.services.moodle.loadbalancer.server.port=8080
+      - traefik.http.services.moodle.loadbalancer.server.scheme=http
+    networks:
+      - traefik
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
+    driver: local
+  moodle_data:
+    driver: local
+  moodledata_data:
+    driver: local
+
+networks:
+  traefik:
+    external: true

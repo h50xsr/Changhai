@@ -1,0 +1,14 @@
+ltitool:
+  build:
+    context: ./dockerfilemap
+    dockerfile: Dockerfile
+  image: ltitool
+  container_name: ltitool
+  ports:
+    - "6000:6000"
+  environment:
+    SESSION_SECRET: "supersecret"
+    OAUTH_SECRET: "oauthtestsecret"
+  networks:
+    - moodle-net
+
