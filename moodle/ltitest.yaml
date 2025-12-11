@@ -2,8 +2,6 @@ services:
   ltitool:
     build: ./dockerfilemap
     container_name: ltitool
-    ports:
-      - "6000:6000"
     environment:
       OAUTH_SECRET: "oauthtestsecret"
       SESSION_SECRET: "sessionsecret"

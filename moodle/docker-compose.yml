@@ -7,8 +7,9 @@ services:
       OAUTH_SECRET: "oauthtestsecret"
     labels:
       - traefik.enable=true
-      - traefik.http.routers.ltitool.rule=Host(`lti.ltitaak.be`)
-      - traefik.http.routers.ltitool.entrypoints=web
+      - traefik.http.routers.ltitool.rule=Host(`ltitool.10.158.10.124.traefik.me`)
+      - traefik.http.routers.ltitool.entrypoints=websecure
+      - traefik.http.routers.ltitool.tls=true
     networks:
       - traefik
 
@@ -38,10 +39,8 @@ services:
       - 'moodledata_data:/bitnami/moodledata'
     labels:
       - traefik.enable=true
-      - traefik.http.routers.moodle.rule=Host(`moodle.ltitaak.be`)
-      - traefik.http.routers.moodle.entrypoints=web
-      - traefik.http.services.moodle.loadbalancer.server.port=8080
-      - traefik.http.services.moodle.loadbalancer.server.scheme=http
+      - traefik.http.routers.moodle.rule=Host(`moodle.10.158.10.124.traefik.me`)
+      - traefik.docker.network=traefik
     networks:
       - traefik
     depends_on:

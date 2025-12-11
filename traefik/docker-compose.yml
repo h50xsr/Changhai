@@ -1,0 +1,17 @@
+services:
+  traefik:
+    image: traefik:v3.6
+    labels:
+      - "traefik.http.routers.dash.rule=Host(`traefik.10.158.10.124.traefik.me`)"
+    networks:
+      - traefik
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/traefik.yml:/etc/traefik/traefik.yml
+networks:
+  traefik:
+    external: true
